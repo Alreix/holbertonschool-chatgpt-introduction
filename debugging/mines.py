@@ -12,7 +12,6 @@ class Minesweeper:
     def __init__(self, width=10, height=10, mines=10):
         self.width = width
         self.height = height
-        # On stocke les mines comme indices linéaires (0..width*height-1)
         self.mines = set(random.sample(range(width * height), mines))
         self.field = [[' ' for _ in range(width)] for _ in range(height)]
         self.revealed = [[False for _ in range(width)] for _ in range(height)]
@@ -39,7 +38,6 @@ class Minesweeper:
         count = 0
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
-                # Ne pas compter la case elle-même
                 if dx == 0 and dy == 0:
                     continue
                 nx, ny = x + dx, y + dy
@@ -54,11 +52,10 @@ class Minesweeper:
             return False
 
         if self.revealed[y][x]:
-            return True  # déjà révélée, on ne refait rien
+            return True
 
         self.revealed[y][x] = True
 
-        # Si aucune mine autour, on révèle automatiquement les voisins
         if self.count_mines_nearby(x, y) == 0:
             for dx in [-1, 0, 1]:
                 for dy in [-1, 0, 1]:
@@ -84,20 +81,19 @@ class Minesweeper:
             try:
                 x = int(input("Enter x coordinate: "))
                 y = int(input("Enter y coordinate: "))
+
                 if not (0 <= x < self.width and 0 <= y < self.height):
                     print("Coordinates out of range.")
                     continue
 
-                # Révéler la case
                 if not self.reveal(x, y):
                     self.print_board(reveal=True)
                     print("Game Over! You hit a mine.")
                     break
 
-                # Vérifier la victoire
                 if self.has_won():
                     self.print_board(reveal=True)
-                    print("Congratulations! You cleared all the mines!")
+                    print("Congratulations! You've won the game.")
                     break
 
             except ValueError:
